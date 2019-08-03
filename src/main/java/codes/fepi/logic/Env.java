@@ -1,6 +1,7 @@
 package codes.fepi.logic;
 
 import codes.fepi.Main;
+import codes.fepi.entity.Project;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -23,8 +24,8 @@ public class Env {
 		return folder;
 	}
 
-	public static Path getProjectFolder(String projectName) {
-		Path projectFolder = folder.resolve(projectName);
+	public static Path getProjectFolder(Project project) {
+		Path projectFolder = folder.resolve(project.getGitProjectName());
 		if (!projectFolder.toFile().exists()) {
 			projectFolder.toFile().mkdir();
 		}

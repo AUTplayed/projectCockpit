@@ -9,16 +9,16 @@ class Git {
 	 * initializes repository if directory isn't one yet
 	 */
 	static void init(Project project) throws Exception {
-		Path dir = Env.getProjectFolder(project.getName()).toAbsolutePath();
-		boolean existing = Command.executeCommandContains("existing", "git", "-C", dir.toString(), "init");
+		Path dir = Env.getProjectFolder(project).toAbsolutePath();
+		boolean existing = Command.executeCommandContains(dir.toFile(), "existing", "git", "init");
 		if (!existing) {
-			Command.executeCommand("git", "-C", dir.toString(), "remote", "add", "origin", project.getGitUrl());
+			Command.executeCommand(dir.toFile(), "git", "remote", "add", "origin", project.getGitUrl());
 		}
 	}
 
 	static void update(Project project) throws Exception {
-		Path dir = Env.getProjectFolder(project.getName()).toAbsolutePath();
-		Command.executeCommand("git", "-C", dir.toString(), "fetch");
-		Command.executeCommand("git", "-C", dir.toString(), "reset", "--hard", "origin/master");
+		Path dir = Env.getProjectFolder(project).toAbsolutePath();
+		Command.executeCommand(dir.toFile(), "git", "fetch");
+		Command.executeCommand(dir.toFile(), "git", "reset", "--hard", "origin/master");
 	}
 }

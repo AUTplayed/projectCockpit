@@ -1,15 +1,16 @@
 package codes.fepi.logic;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class Command {
 
-	public static boolean executeCommandContains(String contains, String... args) throws Exception {
+	public static boolean executeCommandContains(File workDir, String contains, String... args) throws Exception {
 		AtomicBoolean contained = new AtomicBoolean(false);
-		executeCommand((s) -> {
+		executeCommand(workDir, (s) -> {
 			if(s.contains(contains)) {
 				contained.set(true);
 			}
@@ -17,15 +18,27 @@ public class Command {
 		return contained.get();
 	}
 
-	public static void executeCommand(String... args) throws Exception {
-		executeCommand((s) -> {
+	public static boolean executeCommandContains(String contains, String... args) throws Exception {
+		return executeCommandContains(null, contains, args);
+	}
+
+	public static void executeCommand(File workDir, String... args) throws Exception {
+		executeCommand(workDir, (s) -> {
 		}, args);
 	}
 
-	public static void executeCommand(Consumer<String> lineHandler, String... args) throws Exception {
+	public static void executeCommand(String... args) throws Exception {
+		executeCommand(null, args);
+	}
+
+	public static void executeCommand(File workDir, Consumer<String> lineHandler, String... args) throws Exception {
 		ProcessBuilder builder = new ProcessBuilder(args);
+		if (workDir != null) {
+			builder.directory(workDir);
+		}
 		System.out.printf("executing: %s\n", String.join(" ", builder.command()));
 		Process process = builder.start();
+		Runtime.getRuntime().exec(args);
 		BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
 		String line;
 		while ((line = input.readLine()) != null) {
