@@ -1,6 +1,7 @@
 package codes.fepi.ui;
 
 import codes.fepi.dto.ProjectOverviewDto;
+import codes.fepi.entity.Project;
 import spark.Request;
 
 @codes.fepi.ldfspark.PageHandler
@@ -12,7 +13,7 @@ public class PageHandler {
 	public Object project(Request req) {
 		String idString = req.queryParams("id");
 		if(idString == null) {
-			return null;
+			return new Project();
 		}
 		Long id = Long.valueOf(idString);
 		return Repository.INSTANCE.getProjectById(id);

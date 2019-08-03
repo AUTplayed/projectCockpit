@@ -27,7 +27,7 @@ public enum Repository {
 		if (idAutoIncrement != -1) {
 			throw new RuntimeException("Repository initialized more than once");
 		}
-		long idMax = 1;
+		long idMax = 0;
 		for (Project project : projects) {
 			idMax = Math.max(idMax, project.getId());
 			this.projects.put(project.getId(), project);

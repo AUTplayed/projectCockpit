@@ -1,7 +1,7 @@
 $("#save").onclick = function () {
 	var project = buildProject($("#active").value == "true");
 	save(project, (id) => {
-		if(isNaN(project.id)) {
+		if(project.id < 0) {
 			ldf.nav("project?id=" + id);
     	}
 	});
@@ -90,8 +90,13 @@ function wrapInit(query) {
 	return node ? node : new Object();
 }
 
-function disableButtons() {
-	for(input of $$("input")) {
+function disableButtons(extra) {
+	var buttons = extra ? extra : [];
+	buttons.push(wrapInit("#start"));
+	buttons.push(wrapInit("#stop"));
+	buttons.push(wrapInit("#restart"));
+
+	for(input of buttons) {
 		if(input.type == "button" && input.value != "Save") {
 			input.disabled = true;
 			input.style.cursor = "not-allowed";
@@ -99,6 +104,6 @@ function disableButtons() {
 	}
 }
 
-if (isNaN(parseInt($("#id").value))) {
-	disableButtons();
+if (parseInt($("#id").value) < 0) {
+	disableButtons([$("#runtimeLogs"), $("#buildLogs")]);
 }

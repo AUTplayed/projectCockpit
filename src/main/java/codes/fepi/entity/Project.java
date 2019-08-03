@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Project {
 
-	public static long UNSET_ID = 0;
+	public static long UNSET_ID = -1;
 
 	private long id = UNSET_ID;
 	private String name;
