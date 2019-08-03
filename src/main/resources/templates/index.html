@@ -1,10 +1,12 @@
-<div>
+<link rel="stylesheet" href="/styles/index.css">
+<div id="projectDiv">
 	{{#.}}
-		<div>
-			<a href="project?name={{name}}">
-				{{name}}
-				{{health}}
+		<div class="project">
+			<a href="project?id={{id}}">
+				<span>{{name}}</span>
+				<span health="{{health}}">{{health}}</span>
 			</a>
+			<a href="project?id={{id}}">link</a>
 		</div>
 	{{/.}}
 </div>

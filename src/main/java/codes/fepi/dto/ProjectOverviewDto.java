@@ -5,10 +5,12 @@ import codes.fepi.entity.Project;
 
 public class ProjectOverviewDto {
 	private String name;
+	private long id;
 	private Health health;
 
 	public ProjectOverviewDto(Project project) {
 		this.name = project.getName();
+		this.id = project.getId();
 		if (project.getStatus() == null) {
 			this.health = Health.WTF;
 		} else {
@@ -22,5 +24,9 @@ public class ProjectOverviewDto {
 
 	public Health getHealth() {
 		return health;
+	}
+
+	public long getId() {
+		return id;
 	}
 }

@@ -2,37 +2,54 @@ package codes.fepi.ui;
 
 import codes.fepi.entity.Project;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
 
 public enum Repository {
 
 	INSTANCE;
 
 	private long lastChanged = 0;
+	private long idAutoIncrement = -1;
 
-	private List<Project> projects;
+	private ConcurrentHashMap<Long, Project> projects;
 
 	Repository() {
-		projects = new CopyOnWriteArrayList<>();    //todo use concurrentHashMap instead?
+		projects = new ConcurrentHashMap<>();
 	}
 
-	public List<Project> getProjects() {
-		return projects;
+	public Collection<Project> getProjects() {
+		return projects.values();
 	}
 
-	public void init(List<Project> projects) {
-		this.projects.addAll(projects);
-		// add guard against double invocation
+	public void init(Collection<Project> projects) {
+		if (idAutoIncrement != -1) {
+			throw new RuntimeException("Repository initialized more than once");
+		}
+		long idMax = 0;
+		for (Project project : projects) {
+			idMax = Math.max(idMax, project.getId());
+			this.projects.put(project.getId(), project);
+		}
+		idAutoIncrement = idMax + 1;
 	}
 
-	public void updateProject(Project project) {
-		Project storedProject = getProjects().stream()
-				.filter(p -> p.getName().equals(project.getName()))
-				.findFirst()
-				.orElse(null);
-
-		// set all props
+	public void upsertProject(Project project) {
+		if (project.getId() == Project.UNSET_ID) {
+			synchronized (this) {
+				project.setId(idAutoIncrement);
+				idAutoIncrement++;
+			}
+			projects.put(project.getId(), project);
+		} else {
+			Project storedProject = projects.get(project.getId());
+			storedProject.setName(project.getName());
+			storedProject.setPort(project.getPort());
+			storedProject.setActive(project.isActive());
+			storedProject.setStartCmd(project.getStartCmd());
+			storedProject.setBuildCmd(project.getBuildCmd());
+			storedProject.setGitUrl(project.getGitUrl());
+		}
 		touched();
 	}
 
@@ -42,5 +59,9 @@ public enum Repository {
 
 	public long getLastChanged() {
 		return lastChanged;
+	}
+
+	public Project getProjectById(Long id) {
+		return projects.get(id);
 	}
 }

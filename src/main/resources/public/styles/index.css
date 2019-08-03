@@ -1,0 +1,21 @@
+.project {
+	margin: 10px;
+	padding: 5px;
+	border: 1px solid black;
+	cursor: pointer;
+}
+
+.project > a {
+	text-decoration: none;
+}
+
+.project > a > span {
+	padding: 5px;
+	margin: 5px;
+}
+
+#projectDiv {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}

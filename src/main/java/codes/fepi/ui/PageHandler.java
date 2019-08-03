@@ -10,8 +10,8 @@ public class PageHandler {
 	}
 
 	public Object project(Request req) {
-		String projectName = req.queryParams("name");
-
-		return null;
+		String idString = req.queryParams("id");
+		Long id = Long.valueOf(idString);
+		return Repository.INSTANCE.getProjectById(id);
 	}
 }

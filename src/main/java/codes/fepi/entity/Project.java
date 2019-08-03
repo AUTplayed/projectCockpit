@@ -3,6 +3,10 @@ package codes.fepi.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Project {
+
+	public static long UNSET_ID = -1;
+
+	private long id = UNSET_ID;
 	private String name;
 	private String gitUrl;
 	private int port;
@@ -57,6 +61,14 @@ public class Project {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	@JsonIgnore

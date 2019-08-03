@@ -4,11 +4,11 @@ import codes.fepi.entity.Health;
 import codes.fepi.entity.Project;
 import codes.fepi.entity.Status;
 
-import java.util.List;
+import java.util.Collection;
 
 public class ProjectManagement {
 
-	public static void initAll(List<Project> projects) {
+	public static void initAll(Collection<Project> projects) {
 		for (Project project : projects) {
 			try {
 				initProject(project);

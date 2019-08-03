@@ -1,0 +1,59 @@
+.inputpair {
+	border: 1px solid black;
+	margin: 5px;
+	display: flex;
+	flex-direction: row;
+}
+
+.inputpair > input {
+	border: none;
+	padding: 5px;
+	margin-left: auto;
+	width: 80%;
+}
+
+.inputpair > label {
+	padding: 5 0 5 5;
+}
+
+.buttons {
+	margin: 5px;
+	display: flex;
+	justify-content: space-evenly;
+}
+.buttons > a,
+.buttons > input  {
+	border: 1px solid black;
+	padding: 5px;
+	text-decoration: none;
+	background-color: white;
+	width: 20%;
+	text-align: center;
+	cursor: pointer;
+}
+
+#inputDiv {
+	display: flex;
+	flex-direction: column;
+	width: 600px;
+}
+
+#statusDiv {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+}
+
+#monitorDiv {
+	display: flex;
+	flex-direction: column;
+	width: 600px;
+	margin: 20px;
+}
+
+#projectContainer {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}

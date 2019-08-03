@@ -1,0 +1,51 @@
+<link rel="stylesheet" href="/styles/project.css">
+<div id="projectContainer">
+	<div id="inputDiv">
+		<input type="hidden" id="id" value="{{id}}">
+		<span class="inputpair">
+			<label for="name">name:</label>
+			<input id="name" value="{{name}}">
+		</span>
+		<span class="inputpair">
+			<label for="port">port:</label>
+			<input id="port" type="number" value="{{port}}">
+		</span>
+		<span class="inputpair">
+			<label for="gitUrl">gitUrl:</label>
+			<input id="gitUrl" value="{{gitUrl}}">
+		</span>
+		<span class="inputpair">
+			<label for="buildCmd">buildCmd:</label>
+			<input id="buildCmd" value="{{buildCmd}}">
+		</span>
+		<span class="inputpair">
+			<label for="startCmd">startCmd:</label>
+			<input id="startCmd" value="{{startCmd}}">
+		</span>
+		<span class="buttons">
+			<a href="/"><</a>
+			<input type="button" id="save" value="Save">
+			{{#active}}
+				<input type="button" id="stop" value="Stop">
+				<input type="button" id="restart" value="Restart">
+			{{/active}}
+			{{^active}}
+				<input type="button" id="start" value="Start">
+			{{/active}}
+		</span>
+	</div>
+	<div id="monitorDiv">
+		<div id="statusDiv">
+			<span>
+				<label for="health">Health:</label>
+				<span health="{{status.health}}" id="health">{{status.health}}</span>
+			</span>
+		</div>
+		<div class="buttons">
+			<input type="button" id="logs" value="Load Logs">
+		</div>
+		<div id="logDiv">
+
+		</div>
+	</div>
+</div>

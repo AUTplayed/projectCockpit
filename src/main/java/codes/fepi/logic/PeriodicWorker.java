@@ -4,6 +4,7 @@ import codes.fepi.entity.Project;
 import codes.fepi.ui.Repository;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 public class PeriodicWorker implements Runnable {
@@ -17,7 +18,7 @@ public class PeriodicWorker implements Runnable {
 
 	@Override
 	public void run() {
-		List<Project> projects = Repository.INSTANCE.getProjects();
+		Collection<Project> projects = Repository.INSTANCE.getProjects();
 		for (Project project : projects) {
 			ProjectManagement.updateHealth(project);
 		}

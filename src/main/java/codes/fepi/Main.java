@@ -26,7 +26,7 @@ public class Main {
 
 		PeriodicWorker periodicWorker = new PeriodicWorker(fileStore);
 		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-		scheduler.scheduleAtFixedRate(periodicWorker, 1, 10, TimeUnit.SECONDS);
+		scheduler.scheduleAtFixedRate(periodicWorker, 1, 10, TimeUnit.MINUTES);
 	}
 
 	private static int getPort(String[] args) {

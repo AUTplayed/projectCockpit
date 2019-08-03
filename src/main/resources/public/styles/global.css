@@ -1,0 +1,15 @@
+[health*="UP"] {
+	background-color: lightgreen;
+}
+
+[health*="CRASHED"] {
+	background-color: red;
+}
+
+[health*="DOWN"] {
+	background-color: lightgray;
+}
+
+[health*="WTF"] {
+	background-color: lightblue;
+}
