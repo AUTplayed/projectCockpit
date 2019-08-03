@@ -11,6 +11,9 @@ public class PageHandler {
 
 	public Object project(Request req) {
 		String idString = req.queryParams("id");
+		if(idString == null) {
+			return null;
+		}
 		Long id = Long.valueOf(idString);
 		return Repository.INSTANCE.getProjectById(id);
 	}

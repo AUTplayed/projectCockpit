@@ -42,6 +42,6 @@ public class Main {
 				return Integer.valueOf(arg);
 			}
 		}
-		return 6666;
+		return 6066;
 	}
 }

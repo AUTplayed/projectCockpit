@@ -1,6 +1,7 @@
 package codes.fepi.ui;
 
 import codes.fepi.entity.Project;
+import codes.fepi.logic.ProjectManagement;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,7 +27,7 @@ public enum Repository {
 		if (idAutoIncrement != -1) {
 			throw new RuntimeException("Repository initialized more than once");
 		}
-		long idMax = 0;
+		long idMax = 1;
 		for (Project project : projects) {
 			idMax = Math.max(idMax, project.getId());
 			this.projects.put(project.getId(), project);
@@ -34,13 +35,14 @@ public enum Repository {
 		idAutoIncrement = idMax + 1;
 	}
 
-	public void upsertProject(Project project) {
+	public void upsertProject(Project project) throws Exception {
 		if (project.getId() == Project.UNSET_ID) {
 			synchronized (this) {
 				project.setId(idAutoIncrement);
 				idAutoIncrement++;
 			}
 			projects.put(project.getId(), project);
+			ProjectManagement.initProject(project);
 		} else {
 			Project storedProject = projects.get(project.getId());
 			storedProject.setName(project.getName());

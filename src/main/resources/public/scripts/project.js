@@ -1,6 +1,10 @@
 $("#save").onclick = function () {
 	var project = buildProject($("#active").value == "true");
-	save(project);
+	save(project, (id) => {
+		if(isNaN(project.id)) {
+			ldf.nav("project?id=" + id);
+    	}
+	});
 }
 
 wrapInit("#start").onclick = function () {
@@ -57,8 +61,16 @@ function stop(cb) {
     	});
 }
 
-function save(project) {
-	fetch("/api/project", {method: "POST", body: JSON.stringify(project)}).then(console.log).catch(console.log);
+function save(project, cb) {
+	fetch("/api/project", {method: "POST", body: JSON.stringify(project)})
+		.then(r => {
+	        r.text().then(t => {
+	            if(cb) cb(t);
+	        });
+	    }).catch(r => {
+	        console.log(r);
+	        if(cb) cb();
+	    });
 }
 
 function buildProject(active) {
@@ -85,4 +97,8 @@ function disableButtons() {
 			input.style.cursor = "not-allowed";
 		}
 	}
+}
+
+if (isNaN(parseInt($("#id").value))) {
+	disableButtons();
 }

@@ -38,6 +38,11 @@
 	width: 600px;
 }
 
+#logDiv {
+	overflow: auto;
+	height: 70vh;
+}
+
 #statusDiv {
 	display: flex;
 	flex-direction: row;
