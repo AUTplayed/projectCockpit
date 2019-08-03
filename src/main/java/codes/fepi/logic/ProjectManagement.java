@@ -5,10 +5,17 @@ import codes.fepi.entity.LogType;
 import codes.fepi.entity.Project;
 import codes.fepi.entity.Status;
 
-import java.nio.file.Path;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 
 public class ProjectManagement {
+
+	private static final long LOG_FILE_MAX_SIZE = 1000000;
 
 	public static void initAll(Collection<Project> projects) {
 		for (Project project : projects) {
@@ -29,7 +36,10 @@ public class ProjectManagement {
 
 	public static void updateAndRestart(Project project) throws Exception {
 		Git.update(project);
-		Command.executeCommand(Env.getProjectFolder(project).toFile(), wrapToLog(project, project.getBuildCmd(), LogType.BUILD));
+		Command.executeCommand(Env.getProjectFolder(project).toFile(),
+				LogType.BUILD.getLogFile(project),
+				true,
+				toArgs(project.getBuildCmd()));
 		restart(project);
 	}
 
@@ -38,7 +48,10 @@ public class ProjectManagement {
 		if (health == Health.UP) {
 			stop(project);
 		}
-		Command.executeCommand(Env.getProjectFolder(project).toFile(), wrapToLog(project, project.getStartCmd(), LogType.RUN));
+		Command.executeCommand(Env.getProjectFolder(project).toFile(),
+				LogType.RUN.getLogFile(project),
+				false,
+				toArgs(project.getStartCmd()));
 		updateHealth(project);
 	}
 
@@ -53,23 +66,40 @@ public class ProjectManagement {
 		Health health = null;
 		if (!Env.windows) {
 			String portAndProt = project.getPort() + "/tcp";
-			boolean running = false;
+			boolean running;
 			try {
 				running = Command.executeCommandContains(portAndProt, "fuser", portAndProt);
 				health = Health.determine(project.isActive(), running);
 			} catch (Exception ignored) {
 			}
 		}
-		if(health == null) {
+		if (health == null) {
 			health = Health.WTF;
 		}
 		project.getStatus().setHealth(health);
 		return health;
 	}
 
-	private static String[] wrapToLog(Project project, String cmd, LogType logType) {
-		Path logFile = Env.getProjectFolder(project).resolve(logType.getFilename());
-		cmd += " >" + logFile.toAbsolutePath().toString() + " 2>&1 &";
+	public static String getLogs(Project project, LogType logType) throws IOException {
+		File file = logType.getLogFile(project);
+		RandomAccessFile logFile = new RandomAccessFile(file, "r");
+		long fileLength = logFile.length();
+		if (fileLength > LOG_FILE_MAX_SIZE) {
+			logFile.seek(fileLength - LOG_FILE_MAX_SIZE);
+		}
+		StringBuilder logBuilder = new StringBuilder();
+		logBuilder.append("Last modified: ");
+		logBuilder.append(Instant.ofEpochMilli(file.lastModified()).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_INSTANT));
+		logBuilder.append("\n");
+		String line;
+		while ((line = logFile.readLine()) != null) {
+			logBuilder.append(line);
+			logBuilder.append("\n");
+		}
+		return logBuilder.toString();
+	}
+
+	private static String[] toArgs(String cmd) {
 		return cmd.split(" ");
 	}
 }

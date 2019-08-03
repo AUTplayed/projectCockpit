@@ -4,19 +4,37 @@ $("#save").onclick = function () {
 }
 
 wrapInit("#start").onclick = function () {
+	disableButtons();
 	var project = buildProject(true);
 	save(project);
-	restart();
+	restart(() => ldf.locchange());
 }
 
 wrapInit("#stop").onclick = function () {
+	disableButtons();
 	var project = buildProject(false);
 	save(project);
-	stop();
+	stop(() => ldf.locchange());
 }
 
 wrapInit("#restart").onclick = function () {
-	restart();
+	disableButtons();
+	restart(() => ldf.locchange());
+}
+
+$("#runtimeLogs").onclick = function () {
+	loadLog("RUN");
+}
+
+$("#buildLogs").onclick = function () {
+	loadLog("BUILD");
+}
+
+function loadLog(type) {
+	fetch("/api/project/logs/" + $("#id").value + "?type=" + type)
+		.then(r => r.text()
+			.then(t => ldf.change("#logDiv", t))
+		).catch(console.log);
 }
 
 function restart(cb) {
@@ -58,4 +76,13 @@ function buildProject(active) {
 function wrapInit(query) {
 	var node = $(query);
 	return node ? node : new Object();
+}
+
+function disableButtons() {
+	for(input of $$("input")) {
+		if(input.type == "button" && input.value != "Save") {
+			input.disabled = true;
+			input.style.cursor = "not-allowed";
+		}
+	}
 }
