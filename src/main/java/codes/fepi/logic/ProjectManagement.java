@@ -45,7 +45,6 @@ public class ProjectManagement {
 				LogType.RUN.getLogFile(project),
 				false,
 				toArgs(project.getStartCmd()));
-		updateHealth(project);
 	}
 
 	public static void stop(Project project) throws Exception {
@@ -55,16 +54,19 @@ public class ProjectManagement {
 		}
 	}
 
-	static Health updateHealth(Project project) {
+	public static Health updateHealth(Project project) {
 		Health health = null;
 		if (!Env.windows) {
 			String portAndProt = project.getPort() + "/tcp";
 			boolean running;
 			try {
-				running = Command.executeCommandContains(portAndProt, "fuser", portAndProt);
-				health = Health.determine(project.isActive(), running);
+				Command.executeCommand("fuser", portAndProt);
+				running = true;
 			} catch (Exception ignored) {
+				// fuser exits with code 1 if it doesn't find anything...
+				running = false;
 			}
+			health = Health.determine(project.isActive(), running);
 		}
 		if (health == null) {
 			health = Health.WTF;

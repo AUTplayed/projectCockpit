@@ -2,6 +2,7 @@ package codes.fepi.ui;
 
 import codes.fepi.dto.ProjectOverviewDto;
 import codes.fepi.entity.Project;
+import codes.fepi.logic.ProjectManagement;
 import spark.Request;
 
 @codes.fepi.ldfspark.PageHandler
@@ -16,6 +17,8 @@ public class PageHandler {
 			return new Project();
 		}
 		Long id = Long.valueOf(idString);
-		return Repository.INSTANCE.getProjectById(id);
+		Project project = Repository.INSTANCE.getProjectById(id);
+		ProjectManagement.updateHealth(project);
+		return project;
 	}
 }

@@ -35,7 +35,7 @@ class Command {
 	static void executeCommand(File workDir, File outFile, boolean wait, String... args) throws IOException, InterruptedException {
 		ProcessBuilder builder = prepBuilder(workDir, args);
 		System.out.printf("redirecting to: %s\n", outFile.getAbsolutePath());
-		builder.redirectError(outFile);
+		builder.redirectErrorStream(true);
 		builder.redirectOutput(outFile);
 		Process process = builder.start();
 		if (wait) {
@@ -58,7 +58,7 @@ class Command {
 			errors.append(line).append("\n");
 		}
 		input.close();
-		if (process.exitValue() != 0) {
+		if (process.waitFor() != 0) {
 			throw new Exception(String.format("%s exited with error code %d:\n%s", String.join(" ", builder.command()), process.exitValue(), errors));
 		}
 	}
