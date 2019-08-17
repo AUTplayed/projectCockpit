@@ -7,6 +7,7 @@ import codes.fepi.logic.FileStore;
 import codes.fepi.logic.PeriodicWorker;
 import codes.fepi.logic.ProjectManagement;
 import codes.fepi.ui.ApiHandler;
+import codes.fepi.ui.Auth;
 import codes.fepi.ui.Repository;
 import spark.Spark;
 
@@ -21,6 +22,7 @@ public class Main {
 		}
 		Spark.port(getPort(args));
 		LdfSpark.start();
+		Auth.init();
 		ApiHandler.init();
 
 		FileStore fileStore = new FileStore();
