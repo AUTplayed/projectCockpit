@@ -5,7 +5,6 @@ import codes.fepi.ui.Repository;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
 public class PeriodicWorker implements Runnable {
 

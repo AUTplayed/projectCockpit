@@ -21,4 +21,10 @@ class Git {
 		Command.executeCommand(dir.toFile(), "git", "fetch");
 		Command.executeCommand(dir.toFile(), "git", "reset", "--hard", "origin/master");
 	}
+
+	static void updateSelf() throws Exception {
+		Path dir = Env.getFolder().toAbsolutePath();
+		Command.executeCommand(dir.toFile(), "git", "fetch");
+		Command.executeCommand(dir.toFile(), "git", "reset", "--hard", "origin/master");
+	}
 }

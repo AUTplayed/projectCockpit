@@ -4,7 +4,10 @@ import codes.fepi.entity.Health;
 import codes.fepi.entity.LogType;
 import codes.fepi.entity.Project;
 import codes.fepi.entity.Status;
+import codes.fepi.ui.Repository;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 
 public class ProjectManagement {
@@ -28,12 +31,31 @@ public class ProjectManagement {
 	}
 
 	public static void updateAndRestart(Project project) throws Exception {
-		Git.update(project);
-		Command.executeCommand(Env.getProjectFolder(project).toFile(),
-				LogType.BUILD.getLogFile(project),
-				true,
-				toArgs(project.getBuildCmd()));
-		restart(project);
+		if (!project.getGitUrl().contains("AUTplayed/projectCockpit")) {
+			Git.update(project);
+			Command.executeCommand(Env.getProjectFolder(project).toFile(),
+					LogType.BUILD.getLogFile(project),
+					true,
+					toArgs(project.getBuildCmd()));
+			restart(project);
+		} else {
+			final Path selfPath = Env.getFolder().getParent().getParent();
+			Git.updateSelf();
+			Command.executeCommand(selfPath.toFile(),
+					LogType.BUILD.getLogFile(project),
+					true,
+					toArgs(project.getBuildCmd()));
+			restartSelf(project, selfPath);
+		}
+	}
+
+	private static void restartSelf(Project project, Path selfPath) throws Exception {
+		new FileStore().store(Repository.INSTANCE.getProjects());
+		Command.executeCommand(selfPath.toFile(),
+				LogType.RUN.getLogFile(project),
+				false,
+				toArgs(project.getStartCmd()));
+		Command.executeCommand(null, false, "fuser", "-k", project.getPort() + "/tcp");
 	}
 
 	private static void restart(Project project) throws Exception {

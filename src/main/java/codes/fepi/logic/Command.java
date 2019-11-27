@@ -11,7 +11,7 @@ class Command {
 
 	static boolean executeCommandContains(File workDir, String contains, String... args) throws Exception {
 		AtomicBoolean contained = new AtomicBoolean(false);
-		executeCommand(workDir, (s) -> {
+		executeCommand(workDir, true, (s) -> {
 			if (s.contains(contains)) {
 				contained.set(true);
 			}
@@ -24,7 +24,11 @@ class Command {
 	}
 
 	static void executeCommand(File workDir, String... args) throws Exception {
-		executeCommand(workDir, (s) -> {
+		executeCommand(workDir, true, args);
+	}
+
+	static void executeCommand(File workDir, boolean wait, String... args) throws Exception {
+		executeCommand(workDir, wait, (s) -> {
 		}, args);
 	}
 
@@ -34,7 +38,7 @@ class Command {
 
 	static void executeCommand(File workDir, File outFile, boolean wait, String... args) throws IOException, InterruptedException {
 		ProcessBuilder builder = prepBuilder(workDir, args);
-		System.out.printf("redirecting to: %s\n", outFile.getAbsolutePath());
+		//System.out.printf("redirecting to: %s\n", outFile.getAbsolutePath());
 		builder.redirectErrorStream(true);
 		builder.redirectOutput(outFile);
 		Process process = builder.start();
@@ -43,9 +47,12 @@ class Command {
 		}
 	}
 
-	private static void executeCommand(File workDir, Consumer<String> lineHandler, String... args) throws Exception {
+	private static void executeCommand(File workDir, boolean wait, Consumer<String> lineHandler, String... args) throws Exception {
 		ProcessBuilder builder = prepBuilder(workDir, args);
 		Process process = builder.start();
+		if (!wait) {
+			return;
+		}
 		BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
 		String line;
 		while ((line = input.readLine()) != null) {
